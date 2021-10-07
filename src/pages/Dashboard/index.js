@@ -1,9 +1,37 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+
+import api from '../../services/api';
 
 import Picker from '../../components/Picker';
 
 export default function Dashboard() {
+  const [moedas, setMoedas] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  const [moedaSelecionada, setMoedaSelecionada] = useState(null);
+  const [input, setInput] = useState(0);
+
+  useEffect(() => {
+    async function loadMoedas(){
+      const response = await api.get('all');
+      
+      let arrayMoedas = [];
+      Object.keys(response.data).map((key) => {
+        arrayMoedas.push({
+          key: key,
+          label: key,
+          value: key
+        })
+      })
+
+      console.log(arrayMoedas)
+    }
+
+    loadMoedas();
+  },[]);
+
+
   return (
     <View style={styles.container}>
       <View style={styles.areaMoeda}>
@@ -13,7 +41,7 @@ export default function Dashboard() {
 
       <View style={styles.areaValor}>
         <Text style={styles.titulo}>Digite o valor a ser convertido</Text>
-        <TextInput style={styles.input} placeholder="Ex: 150" keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder="Ex: 150" keyboardType="numeric" onChangeText={(text) => setInput(text)}/>
       </View>
 
       <TouchableOpacity style={styles.btnArea}>
